@@ -2,7 +2,7 @@ version: 0.2
 
 env:
   variables:
-    CLUSTER_NAME: "my-eks-cluster"
+    CLUSTER_NAME: "eks-cicd-lab"
     AWS_REGION: "ap-southeast-1"
     ECR_REPO: "nodejs-cicd-demo"
 
