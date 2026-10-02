@@ -1,0 +1,32 @@
+apiVersion: apps/v1                 # Nhóm API apps, phiên bản v1, dành cho Deployment.
+kind: Deployment                   # Loại tài nguyên muốn tạo là Deployment.
+metadata:                          # Thông tin định danh của Deployment.
+  name: nodejs-cicd-demo            # Tên Deployment.
+spec:                              # Trạng thái mong muốn của Deployment.
+  replicas: 2                      # Mong muốn duy trì 2 Pod chạy ứng dụng.
+  selector:                        # Điều kiện nhận diện các Pod thuộc Deployment.
+    matchLabels:                   # Chọn Pod theo các nhãn khớp chính xác.
+      app: nodejs-cicd-demo         # Nhãn cần khớp: app=nodejs-cicd-demo.
+  template:                        # Khuôn mẫu dùng để tạo từng Pod.
+    metadata:                      # Thông tin của Pod được tạo từ khuôn mẫu.
+      labels:                      # Các nhãn gắn lên Pod.
+        app: nodejs-cicd-demo       # Gắn nhãn để Deployment và Service tìm thấy Pod.
+    spec:                          # Cấu hình chạy bên trong mỗi Pod.
+      containers:                  # Danh sách container của Pod.
+        - name: nodejs-cicd-demo    # Tên container; dấu "-" là một phần tử danh sách.
+          image: 470562161805.dkr.ecr.ap-southeast-1.amazonaws.com/nodejs-cicd-demo:latest
+                                   # Image dùng để khởi tạo container.
+          ports:                   # Danh sách cổng được khai báo cho container.
+            - containerPort: 3000  # Khai báo ứng dụng sử dụng cổng 3000.
+---
+apiVersion: v1                     # Phiên bản v1 thuộc nhóm API lõi của Kubernetes.
+kind: Service                      # Loại tài nguyên muốn tạo là Service.
+metadata:                          # Thông tin định danh của Service.
+  name: nodejs-cicd-demo-svc        # Tên Service.
+spec:                              # Cấu hình mong muốn của Service.
+  type: LoadBalancer               # Yêu cầu tích hợp bộ cân bằng tải bên ngoài cluster.
+  selector:                        # Điều kiện chọn các Pod nhận lưu lượng.
+    app: nodejs-cicd-demo           # Chọn Pod có nhãn app=nodejs-cicd-demo.
+  ports:                           # Danh sách cổng mà Service cung cấp.
+    - port: 80                     # Cổng truy cập của Service.
+      targetPort: 3000             # Cổng đích trên Pod được chọn.
